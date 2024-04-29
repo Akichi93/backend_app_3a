@@ -592,13 +592,18 @@ class ContratController extends Controller
     {
         $data = $request->all();
 
-        if ($request->hasFile('file')) {
-            $ressource_tmp = $request->file('file');
+        $id = Avenant::where('uuidAvenant', $data['uuidAvenant'])->value('id_avenant');
+
+
+
+
+        if ($request->hasFile('image')) {
+            $ressource_tmp = $request->file('image');
             if ($ressource_tmp->isValid()) {
                 //obtenir l'extension de l'file
                 $extension = $ressource_tmp->getClientOriginalExtension();
                 //Generer un nouveau nom d'file
-                $ressource = request('file')->getClientOriginalName();
+                $ressource = request('image')->getClientOriginalName();
                 $ressourceTitle = pathinfo($ressource, PATHINFO_FILENAME);
                 $ressourceName = $ressourceTitle . '.' . $extension;
                 $ressourcePath = 'images/piece_avenant/';
@@ -607,20 +612,20 @@ class ContratController extends Controller
             }
         }
 
+
+
+
+
         $fichier = new FileAvenant();
         $fichier->nom_file = $ressourceName;
-        $fichier->id_avenant = $data['id_avenant'];
+        $fichier->id_avenant = $id;
         $fichier->titre = $data['titre'];
+        $fichier->uuidAvenant = $data['uuidAvenant'];
+        $fichier->id_entreprise = $data['identreprise'];
+        $fichier->sync = 1;
         $fichier->save();
 
         return response()->json($fichier);
-    }
-
-    public function getFileAvenant($id_avenant)
-    {
-        $files = FileAvenant::where('id_avenant', '=', $id_avenant)->get();
-
-        return response()->json($files);
     }
 
     public function getInfoAvenantContrat(Request $request)
@@ -969,7 +974,7 @@ class ContratController extends Controller
         $user =  JWTAuth::parseToken()->authenticate();
         // $avenants = Avenant::where('id_entreprise', $user->id_entreprise)->get();
 
-        $avenants = Avenant::select('avenants.uuidContrat', 'annee', 'mois', 'clients.nom_client', 'branches.nom_branche', 'compagnies.nom_compagnie', 'contrats.numero_police', 'avenants.prime_ttc', 'avenants.retrocession', 'avenants.commission', 'avenants.commission_courtier', 'avenants.prise_charge', 'avenants.ristourne', 'avenants.prime_nette', 'date_emission', 'date_debut', 'date_fin', 'avenants.accessoires', 'avenants.frais_courtier', 'avenants.cfga', 'avenants.taxes_totales', 'code_avenant', 'uuidAvenant', 'avenants.uuidApporteur', 'avenants.uuidCompagnie', 'solder', 'reverser', 'payer_apporteur', 'payer_courtier', 'supprimer_avenant', 'avenants.id_entreprise', 'avenants.sync')
+        $avenants = Avenant::select('avenants.uuidContrat', 'annee', 'mois', 'clients.uuidClient', 'branches.uuidBranche', 'contrats.uuidContrat', 'avenants.prime_ttc', 'avenants.retrocession', 'avenants.commission', 'avenants.commission_courtier', 'branches.nom_branche','avenants.prise_charge', 'avenants.ristourne', 'avenants.prime_nette', 'date_emission', 'date_debut', 'date_fin','type', 'avenants.accessoires', 'avenants.frais_courtier', 'avenants.cfga', 'avenants.taxes_totales','compagnies.nom_compagnie', 'code_avenant', 'uuidAvenant', 'avenants.uuidApporteur', 'avenants.uuidCompagnie', 'solder', 'reverser', 'payer_apporteur', 'payer_courtier', 'supprimer_avenant', 'avenants.id_entreprise', 'avenants.sync')
             ->join("contrats", 'avenants.id_contrat', '=', 'contrats.id_contrat')
             ->join("clients", 'contrats.id_client', '=', 'clients.id_client')
             ->join("branches", 'contrats.id_branche', '=', 'branches.id_branche')
@@ -1002,5 +1007,22 @@ class ContratController extends Controller
             ->get();
 
         return response()->json($garanties);
+    }
+
+    public function getFileAvenant()
+    {
+        $user =  JWTAuth::parseToken()->authenticate();
+        $files = FileAvenant::select('uuidAvenant', 'nom_file', 'titre', 'sync', 'id_entreprise')
+            ->where('id_entreprise', $user->id_entreprise)
+            ->get();
+
+        return response()->json($files);
+    }
+
+    public function FileAvenant($uuidAvenant){
+        $files = FileAvenant::where('uuidAvenant', $uuidAvenant)
+            ->get();
+
+        return response()->json($files);
     }
 }
