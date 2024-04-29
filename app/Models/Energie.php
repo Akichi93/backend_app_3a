@@ -9,6 +9,8 @@ class Energie extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_energie';
+
     protected $fillable = [
         'uuidEnergie',
         'energie',

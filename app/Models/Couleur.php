@@ -9,6 +9,8 @@ class Couleur extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'id_couleur';
+
     protected $fillable = [
         'uuidCouleur',
         'couleur',

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Localisation extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'id_localisation';
 
     protected $fillable = [
         'uuidMarque',
