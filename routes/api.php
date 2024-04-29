@@ -184,8 +184,8 @@ Route::group([
         Route::get('editAvenant/{id_avenant}', 'editAvenant');
         Route::post('deleteAvenant', 'deleteAvenant');
         Route::post('postAvenant', 'postAvenant'); // Ajouter un avenant
-        Route::post('postFileAvenant', 'postFileAvenant');
-        Route::get('getFileAvenant/{id_avenant}', 'getFileAvenant');
+        Route::post('postfileavenants', 'postFileAvenant');
+        Route::get('getfileavenants', 'getFileAvenant');
         Route::get('getInfoAvenantContrat', 'getInfoAvenantContrat');
         Route::get('getInfoContrat', 'getInfoContrat');
         Route::get('getCountsinistre', 'getCountsinistre');
@@ -206,6 +206,8 @@ Route::group([
         Route::get('getavenants', 'getAvenants'); // obtenir les avenants 
         Route::get('getautomobiles', 'getAutomobiles'); // obtenir les automobiles
         Route::get('getgaranties', 'getGaranties'); // obtenir les garanties
+
+        Route::get('fileavenants/{uuidAvenant}', 'FileAvenant');
     });
 
     // Sinistres
@@ -342,6 +344,11 @@ Route::group([
         Route::post('sync-automobiles', 'syncAutomobile');
         Route::post('sync-garanties', 'syncGarantie');
         Route::post('sync-sinistres', 'syncSinistre');
-        Route::post('sync-regelements', 'syncReglement');
-    });
+        Route::post('sync-reglements', 'syncReglement');
+        Route::post('sync-categories', 'syncCategorie');
+        Route::post('sync-marques', 'syncMarque');
+        Route::post('sync-genres', 'syncGenre');
+        Route::post('sync-couleurs', 'syncCouleur');
+        Route::post('sync-energies', 'syncEnergie');
+    })->middleware('throttle:100,1');
 });
